@@ -15,9 +15,12 @@ RUN    adduser --quiet --shell /bin/bash --gecos "Sage user,101,," --disabled-pa
 USER sage
 
 ADD install_sage.sh /tmp/install_sage.sh
+
+# see https://github.com/docker/docker/issues/9547 for the rationale for sync
+
 RUN    sudo chown sage:sage /tmp/install_sage.sh \
     && chmod +x /tmp/install_sage.sh \
-    && sync \                             # see https://github.com/docker/docker/issues/9547
+    && sync \
     && /tmp/install_sage.sh
 
 ENV HOME /home/sage
