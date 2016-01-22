@@ -31,3 +31,4 @@ EOFSAGE
 EOFSAGE
 
 sudo ln -sf /opt/sage/sage /usr/bin/sage
+sudo ln -sf /opt/sage/sage /usr/bin/sagemath
