@@ -16,7 +16,7 @@ USER sage
 
 # see https://github.com/docker/docker/issues/9547 for the sync
 
-ADD sagemath-develop/install_sage.sh /tmp/install_sage.sh
+ADD install_sage.sh /tmp/install_sage.sh
 RUN    sudo chown sage:sage /tmp/install_sage.sh \
     && chmod +x /tmp/install_sage.sh \
     && sync \
