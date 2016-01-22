@@ -1,4 +1,4 @@
-FROM sagemath/sage
+FROM sagemath/sagemath-devel
 MAINTAINER Sebastian Gutsche <sebastian.gutsche@gmail.com>
 
 RUN sage -i patchbot
