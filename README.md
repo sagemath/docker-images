@@ -9,11 +9,11 @@ Contains dockerfiles for various Sage images
 This Dockerfile should build an image containing compiled sources of Sage in latest Ubuntu.
 To build it from scratch, type
     
-    docker build --tag="sagemath/sage" sage_docker_base
+    docker build --tag="sagemath/sagemath" sage_docker_base
     
 If you want to download its release, (roughly 7GB), type
     
-    docker pull sagemath/sage
+    docker pull sagemath/sagemath
     
 or simply continue to the next step.
 
@@ -21,21 +21,21 @@ or simply continue to the next step.
 
 To start a container running sage, type
     
-    docker run -it sagemath/sage
+    docker run -it sagemath/sagemath
     
 To start something else, like GAP, type
     
-    docker run -it sagemath/sage gap
+    docker run -it sagemath/sagemath gap
     
 ### Running Notebooks
 
 To start a Jupyter or SageNotebook server you can start the container with the following command
 
-    docker run --net="host" sagemath/sage -notebook=jupyter --no-browser
+    docker run --net="host" sagemath/sagemath sage -notebook=jupyter --no-browser
     
 for the Jupyter notebook and
     
-    docker run --net="host" sagemath/sage -notebook
+    docker run --net="host" sagemath/sagemath sage -notebook
     
 for the sage notebook.
 
@@ -44,11 +44,11 @@ for the sage notebook.
 
 This Dockerfile should build an image containing Sage and the testbot. To build it from scratch, type
     
-    docker build --tag="sagemath/sage_patchbot" sage_patchbot
+    docker build --tag="sagemath/sagemath_patchbot" sage_patchbot
     
 To start a patchbot instance, i.e., to securely run the container on your device, type
     
-    docker run -t --name="patchbot" -d sagemath/sage_patchbot
+    docker run -t --name="patchbot" -d sagemath/sagemath_patchbot
     pid=$(docker inspect -f '{{.State.Pid}}' patchbot )
     ip=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' patchbot )
     trac_ip=$(getent hosts trac.sagemath.org | awk '{ print $1 }')
