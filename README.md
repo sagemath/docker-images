@@ -8,7 +8,7 @@ files for building various SageMath containers.
 This container contains a basic installation of the latest version of
 SageMath, built from sources on the latest Ubuntu. Commands are run as
 the Sage user. The SageMath distribution includes several programs
-like GAP, Singular, Pari/GP, R, ... which are available in the path.
+like GAP, Singular, PARI/GP, R, ... which are available in the path.
 
 ### Installation
 
@@ -26,16 +26,14 @@ They can be run similarly:
 
     docker run -it sagemath/sagemath gap
 
+    docker run -it sagemath/sagemath gp         # PARI/GP
+
     docker run -it sagemath/sagemath maxima
 
     docker run -it sagemath/sagemath R
 
     docker run -it sagemath/sagemath singular
 
-Pari/GP is currently missing from the path (TODO: fix install_links?).
-To run it:
-
-    docker run -it sagemath/sagemath sage -gp
 
 
 ### Running the Notebook interfaces
@@ -44,7 +42,8 @@ To start the Jupyter notebook server you can start the container with the follow
 
     docker run --net="host" sagemath/sagemath sage -notebook=jupyter --no-browser
 
-You can then connect your web browser to http://localhost:8080
+You can then connect your web browser to the printed out address
+(typically http://localhost:8888).
 
 Similarly, to run the legacy Sage notebook server:
 
