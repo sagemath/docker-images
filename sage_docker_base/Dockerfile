@@ -3,7 +3,9 @@ FROM ubuntu:wily
 MAINTAINER Sebastian Gutsche <sebastian.gutsche@gmail.com>
 
 RUN    apt-get update -qq \
-    && apt-get install -y wget build-essential m4 dpkg-dev sudo python openssl
+    && apt-get install -y wget build-essential m4 dpkg-dev sudo python openssl \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN    adduser --quiet --shell /bin/bash --gecos "Sage user,101,," --disabled-password sage \
     && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
