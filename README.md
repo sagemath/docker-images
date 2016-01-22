@@ -39,6 +39,16 @@ for the Jupyter notebook and
     
 for the sage notebook.
 
+## sage_development
+
+To build the development version, type
+    
+    docker build --tag="sagemath/sagemath:develop" sage_docker_devel
+    
+or, if you want to download and start it, type
+    
+    docker run -it sagemath/sage:develop
+    
 
 ## sage_patchbot
 
