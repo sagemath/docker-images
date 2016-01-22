@@ -51,7 +51,7 @@ Similarly, to run the legacy Sage notebook server:
 
 Prequisites: network access to download Sage (http/https)
 
-    docker build --tag="sagemath/sagemath" sagemath/Dockerfile .
+    docker build --tag="sagemath/sagemath" sagemath
 
 ## [sagemath/sagemath-develop](sagemath-develop/Dockerfile)
 
