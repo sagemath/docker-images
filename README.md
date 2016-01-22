@@ -40,7 +40,7 @@ They can be run similarly:
 
 To start the Jupyter notebook server you can start the container with the following command:
 
-    docker run --net="host" sagemath/sagemath sage -notebook=jupyter --no-browser
+    docker run -p 127.0.0.1:8888:8888 sagemath/sagemath sage -notebook=jupyter --no-browser
 
 You can then connect your web browser to the printed out address
 (typically http://localhost:8888).
@@ -49,7 +49,7 @@ Similarly, to run the legacy Sage notebook server:
 
     docker run --net="host" sagemath/sagemath sage -notebook
 
-## Rebuilding the container
+### Rebuilding the container
 
     docker build --tag="sagemath/sagemath" sagemath
 
@@ -65,9 +65,28 @@ To download and start it:
 
     docker run -it sagemath/sagemath-develop
 
-## Rebuilding the container
+### Rebuilding the container
 
     docker build --tag="sagemath/sagemath-develop" sagemath-develop
+
+## sagemath/sagemath-jupyter
+
+If you want to have a container already set up for the Jupyter enviroment,
+you can use sagemath/sagemath-jupyter. It is based on sagemath/sagemath.
+
+    docker run -p 127.0.0.1:8888:8888 sagemath/sagemath-jupyter
+
+makes the Jupyter notebook accessible via `localhost:8888`, while
+
+    docker run sagemath/sagemath-jupyter
+
+makes it accessible under the containers ip address on port `8888`. You can
+see the ip address of the container using `docker inspect`. This is useful
+if you want to have more than one notebook server running.
+
+### Rebuilding the container
+
+    docker build --tag="sagemath/sagemath-jupyter" sagemath-jupyter
 
 ## sagemath/sagemath-patchbot
 
