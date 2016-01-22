@@ -34,8 +34,6 @@ They can be run similarly:
 
     docker run -it sagemath/sagemath singular
 
-
-
 ### Running the Notebook interfaces
 
 To start the Jupyter notebook server you can start the container with the following command:
@@ -50,6 +48,8 @@ Similarly, to run the legacy Sage notebook server:
     docker run --net="host" sagemath/sagemath sage -notebook
 
 ## Rebuilding the container
+
+Prequisites: network access to download Sage (http/https)
 
     docker build --tag="sagemath/sagemath" sagemath
 
