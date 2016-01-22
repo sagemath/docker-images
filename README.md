@@ -3,7 +3,7 @@
 This repository contains a collection of dockerfiles and supporting
 files for building various SageMath containers.
 
-## [sagemath/sagemath](sagemath/sagemath/Dockerfile) (roughly 7GB)
+## [sagemath/sagemath](sagemath/Dockerfile) (roughly 7GB)
 
 This container contains a basic installation of the latest version of
 SageMath, built from sources on the latest Ubuntu. Commands are run as
@@ -53,7 +53,7 @@ Prequisites: network access to download Sage (http/https)
 
     docker build --tag="sagemath/sagemath" sagemath
 
-## [sagemath/sagemath-develop](sagemath/sagemath-develop/Dockerfile)
+## [sagemath/sagemath-develop](sagemath-develop/Dockerfile)
 
 This container is similar to the previous one, except that SageMath is
 built from the latest unstable release version of Sage, retrieved by
@@ -69,7 +69,7 @@ To download and start it:
 
     docker build --tag="sagemath/sagemath-develop" sagemath-develop
 
-## [sagemath/sagemath-jupyter](sagemath/sagemath-jupyter/Dockerfile)
+## [sagemath/sagemath-jupyter](sagemath-jupyter/Dockerfile)
 
 If you want to have a container already set up for the Jupyter enviroment,
 you can use sagemath/sagemath-jupyter. It is based on sagemath/sagemath.
@@ -88,7 +88,7 @@ if you want to have more than one notebook server running.
 
     docker build --tag="sagemath/sagemath-jupyter" sagemath-jupyter
 
-## [sagemath/sagemath-patchbot](sagemath/sagemath-patchbot/Dockerfile)
+## [sagemath/sagemath-patchbot](sagemath-patchbot/Dockerfile)
 
 This container, built on top of sagemath-develop, is meant to run
 instances of the [Sage patchbot](http://patchbot.sagemath.org/)
