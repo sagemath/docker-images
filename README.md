@@ -78,7 +78,7 @@ fetches and run cannot harm the host machine.
 
 ### Starting the patchbot:
 
-    docker run -t --name="patchbot" -d sagemath/sagemath_patchbot
+    docker run -t --name="patchbot" -d sagemath/sagemath-patchbot
     pid=$(docker inspect -f '{{.State.Pid}}' patchbot )
     ip=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' patchbot )
     trac_ip=$(getent hosts trac.sagemath.org | awk '{ print $1 }')
