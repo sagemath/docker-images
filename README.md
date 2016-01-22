@@ -48,8 +48,12 @@ This Dockerfile should build an image containing Sage and the testbot. To build 
     
 To start a patchbot instance, i.e., to securely run the container on your device, type
     
-    docker run --name patchbot -d sagemath/sage_patchbot
-    pid=$(docker inspect -f '{{.State.Pid}}' example)
-    nsenter -t $pid -n iptables -A FORWARD -s 172.17.0.21 -d 8.8.8.8 -j ACCEPT
-    iptables -A FORWARD -s 172.17.0.21 -j REJECT --reject-with icmp-host-prohibited
+    docker run -t --name="patchbot" -d sagemath/sage_patchbot
+    pid=$(docker inspect -f '{{.State.Pid}}' patchbot )
+    ip=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' patchbot )
+    trac_ip=$(getent hosts trac.sagemath.org | awk '{ print $1 }')
+    patchbot_ip=$(getent hosts patchbot.sagemath.org | awk '{ print $1 }')
+    nsenter -t $pid -n iptables -A FORWARD -s ${ip} -d ${trac_ip} -j ACCEPT
+    nsenter -t $pid -n iptables -A FORWARD -s ${ip} -d ${patchbot_ip} -j ACCEPT
+    nsenter -t $pid -n iptables -A FORWARD -s ${ip} -j REJECT --reject-with icmp-host-prohibited
 
