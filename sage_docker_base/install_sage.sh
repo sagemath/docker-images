@@ -18,6 +18,9 @@ make
 
 sudo ./sage <<EOFSAGE
     install_scripts("/usr/bin")
+EOFSAGE
+
+./sage <<EOFSAGE
     from sage.misc.misc import DOT_SAGE
     from sagenb.notebook import notebook
     directory = DOT_SAGE+'sage_notebook'
