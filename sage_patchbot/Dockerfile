@@ -1,4 +1,5 @@
 FROM sagemath/sage
+MAINTAINER Sebastian Gutsche <sebastian.gutsche@gmail.com>
 
 RUN sage -i patchbot
 
