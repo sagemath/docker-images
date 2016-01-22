@@ -7,7 +7,7 @@ export MAKE="make -j${number_cores}"
 
 
 cd /opt
-sudo git clone --depth 1 --branch develop git@github.com:sagemath/sage.git
+sudo git clone --depth 1 --branch develop https://github.com/sagemath/sage.git
 sudo chown -R sage:sage /opt/sage
 
 cd sage
