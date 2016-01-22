@@ -70,7 +70,7 @@ To download and start it:
 
     docker build --tag="sagemath/sagemath-devel" sagemath-devel
 
-## sage_patchbot
+## sagemath-patchbot
 
 This container, built on top of sagemath-devel, is meant to run
 instances of the [Sage patchbot](http://patchbot.sagemath.org/)
