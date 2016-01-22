@@ -1,4 +1,4 @@
-FROM sagemath/sagemath:latest
+FROM sagemath/sagemath
 
 MAINTAINER Sebastian Gutsche <sebastian.gutsche@gmail.com>
 
