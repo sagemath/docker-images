@@ -53,7 +53,7 @@ Similarly, to run the legacy Sage notebook server:
 
     docker build --tag="sagemath/sagemath" sagemath
 
-## sagemath/sagemath-devel
+## sagemath/sagemath-develop
 
 This container is similar to the previous one, except that SageMath is
 built from the latest unstable release version of Sage, retrieved by
@@ -63,15 +63,15 @@ TODO: include git-trac
 
 To download and start it:
 
-    docker run -it sagemath/sagemath-devel
+    docker run -it sagemath/sagemath-develop
 
 ## Rebuilding the container
 
-    docker build --tag="sagemath/sagemath-devel" sagemath-devel
+    docker build --tag="sagemath/sagemath-develop" sagemath-develop
 
 ## sagemath/sagemath-patchbot
 
-This container, built on top of sagemath-devel, is meant to run
+This container, built on top of sagemath-develop, is meant to run
 instances of the [Sage patchbot](http://patchbot.sagemath.org/)
 running securely in a sandbox, to ensure that the untrusted code it
 fetches and run cannot harm the host machine.
