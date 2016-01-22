@@ -13,7 +13,7 @@ sudo chown -R sage:sage /opt/sage
 cd sage
 make
 
-sudo ./sage <<EOFSAGE
+sudo ./sage --nodotsage <<EOFSAGE
     install_scripts("/usr/bin")
 EOFSAGE
 
@@ -27,5 +27,4 @@ EOFSAGE
     quit
 EOFSAGE
 
-sudo ln -sf /opt/sage/sage /usr/bin/sage
 sudo ln -sf /opt/sage/sage /usr/bin/sagemath
