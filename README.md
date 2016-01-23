@@ -3,6 +3,9 @@
 This repository contains a collection of dockerfiles and supporting
 files for building various SageMath containers.
 
+Those containers are in the build; we will upload them soon on
+Dockerhub.  Note however that they are experimental; use with caution!
+
 ## [sagemath/sagemath](sagemath/Dockerfile) (roughly 7GB)
 
 This container contains a basic installation of the latest version of
