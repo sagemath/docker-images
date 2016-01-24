@@ -3,9 +3,9 @@ all: check_postinstall
 # Images and their dependencies
 IMAGES=sagemath sagemath-develop sagemath-jupyter sagemath-patchbot
 
-sagemath: sagemath/postinstall_sage.sh
+sagemath: sagemath/install_sage.sh sagemath/postinstall_sage.sh
 
-sagemath-develop: sagemath/postinstall_sage.sh
+sagemath-develop: sagemath/install_sage.sh sagemath/postinstall_sage.sh
 
 sagemath-jupyter: sagemath
 
@@ -34,9 +34,12 @@ docker-clean:
 %/postinstall_sage.sh: postinstall_sage.sh
 	cp $< > $@
 
-sagemat%:
+
+sagemat%: sagemat%/Dockerfile FORCE
 	echo Building sagemath/$@
 	time docker build --tag="sagemath/$@" $@ 2>&1 | tee $@.log
+
+FORCE:
 
 # Tests
 
