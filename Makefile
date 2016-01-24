@@ -7,21 +7,19 @@ build: $(IMAGES)
 push:
 	for image in $(IMAGES); do docker push $$image; done
 
+# Takes care of common file that we need to duplicate in several subdirectories
+# See https://github.com/docker/docker/issues/1676
 check_postinstall: postinstall_sage.sh
 	cp postinstall_sage.sh sagemath/postinstall_sage.sh
 	cp postinstall_sage.sh sagemath-develop/postinstall_sage.sh
 
-sagemath: sagemath/Dockerfile sagemath/install_sage.sh check_postinstall
-	time docker build --tag="sagemath/sagemath" sagemath
+sagemath%: check_postinstall
+	echo Building sagemath/$@
+	time docker build --tag="sagemath/%" $@ 2>&1 | tee $@.log
 
-sagemath-develop: sagemath-develop/Dockerfile sagemath-develop/install_sage.sh check_postinstall
-	time docker build --tag="sagemath/sagemath-develop" sagemath-develop
+sagemath-jupyter: sagemath
 
-sagemath-jupyter: sagemath sagemath-jupyter/Dockerfile
-	time docker build --tag="sagemath/sagemath-jupyter" sagemath-jupyter
-
-sagemath-patchbot: sagemath-develop sagemath-patchbot/Dockerfile
-	time docker build --tag="sagemath/sagemath-patchbot" sagemath-patchbot
+sagemath-patchbot: sagemath-develop
 
 sagemath-develop-test:
 	echo "1+1;" | docker run sagemath/sagemath-develop gap
