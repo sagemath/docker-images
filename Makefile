@@ -28,6 +28,11 @@ sagemath-develop-test:
 	echo "1+1;" | docker run sagemath/sagemath-develop singular
 	echo "All tests passed"
 
-docker-clean: # see https://www.calazan.com/docker-cleanup-commands/
+# Refs:
+# - https://www.calazan.com/docker-cleanup-commands/
+# - http://stackoverflow.com/questions/17236796/how-to-remove-old-docker-containers
+docker-clean:
+	echo "Remove all non running containers"
+	docker rm `docker ps -q -f status=exited`
 	echo "Delete all untagged/dangling (<none>) images"
 	docker rmi `docker images -q -f dangling=true`
