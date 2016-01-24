@@ -15,7 +15,7 @@ check_postinstall: postinstall_sage.sh
 
 sagemath%: check_postinstall
 	echo Building sagemath/$@
-	time docker build --tag="sagemath/%" $@ 2>&1 | tee $@.log
+	time docker build --tag="sagemath/$@" $@ 2>&1 | tee $@.log
 
 sagemath-jupyter: sagemath
 
