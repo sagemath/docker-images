@@ -16,7 +16,7 @@ sagemath-patchbot: sagemath-develop
 build: $(IMAGES)
 
 push:
-	for image in $(IMAGES); do docker push $$image; done
+	for image in $(IMAGES); do docker push sagemath/$$image; done
 
 # Refs:
 # - https://www.calazan.com/docker-cleanup-commands/
