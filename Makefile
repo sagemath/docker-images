@@ -17,13 +17,13 @@ sagemath-patchbot: sagemath-develop sagemath-patchbot/Dockerfile
 	docker build --tag="sagemath/sagemath-patchbot" sagemath-patchbot
 
 sagemath-develop-test:
-	docker run sagemath/sagemath-develop gap
-	docker run sagemath/sagemath-develop gp
-	docker run sagemath/sagemath-develop ipython
-	docker run sagemath/sagemath-develop maxima
-	docker run sagemath/sagemath-develop mwrank
-	docker run sagemath/sagemath-develop R
-	docker run sagemath/sagemath-develop sage
-	docker run sagemath/sagemath-develop sagemath
-	docker run sagemath/sagemath-develop singular
+	echo "1+1;" | docker run sagemath/sagemath-develop gap
+	echo "1+1;" | docker run sagemath/sagemath-develop gp
+	echo "1+1;" | docker run sagemath/sagemath-develop ipython
+	echo "1+1;" | docker run sagemath/sagemath-develop maxima
+	echo ""     | docker run sagemath/sagemath-develop mwrank
+	echo "1+1;" | docker run sagemath/sagemath-develop R --no-save
+	echo "1+1;" | docker run sagemath/sagemath-develop sage
+	echo "1+1;" | docker run sagemath/sagemath-develop sagemath
+	echo "1+1;" | docker run sagemath/sagemath-develop singular
 	echo "All tests passed"
