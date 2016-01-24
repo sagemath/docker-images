@@ -1,5 +1,12 @@
 all: check_postinstall
 
+IMAGES=sagemath sagemath-develop sagemath-jupyter sagemath-patchbot
+
+build: $(IMAGES)
+
+push:
+	for image in $(IMAGES); do docker push $$image; done
+
 check_postinstall: postinstall_sage.sh
 	cp postinstall_sage.sh sagemath/postinstall_sage.sh
 	cp postinstall_sage.sh sagemath-develop/postinstall_sage.sh
