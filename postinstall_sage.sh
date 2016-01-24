@@ -3,7 +3,7 @@
 cd /opt/sage
 
 # Put scripts to start gap, gp, maxima, ... in /usr/bin
-sudo sage --nodotsage -c "install_scripts('/usr/bin')"
+sudo ./sage --nodotsage -c "install_scripts('/usr/bin')"
 
 # Add aliases for sage and sagemath
 sudo ln -sf /opt/sage/sage /usr/bin/sage
