@@ -29,5 +29,5 @@ sagemath-develop-test:
 	echo "All tests passed"
 
 docker-clean: # see https://www.calazan.com/docker-cleanup-commands/
-	echo Delete all 'untagged/dangling' (<none>) images
+	echo Delete all untagged/dangling (<none>) images
 	docker rmi $(docker images -q -f dangling=true)
