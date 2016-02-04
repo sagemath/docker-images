@@ -50,6 +50,8 @@ Similarly, to run the legacy Sage notebook server:
 
     docker run --net="host" sagemath/sagemath sage -notebook
 
+Login: admin, password: sage
+
 ### Rebuilding the container
 
 Prequisites: network access to download Sage (http/https)
