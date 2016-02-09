@@ -31,4 +31,6 @@ RUN    sudo chown sage:sage /tmp/postinstall_sage.sh \
 ENV HOME /home/sage
 WORKDIR /home/sage
 
+EXPOSE 8080
+
 CMD [ "sage" ]

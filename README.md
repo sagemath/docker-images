@@ -25,7 +25,7 @@ To run Sage:
 
     docker run -it sagemath/sagemath
 
-They can be run similarly:
+Other software included in this image can be run similarly:
 
     docker run -it sagemath/sagemath gap
 
@@ -41,16 +41,28 @@ They can be run similarly:
 
 To start the Jupyter notebook server you can start the container with the following command:
 
-    docker run -p 127.0.0.1:8888:8888 sagemath/sagemath sage -notebook=jupyter --no-browser
+    docker run -p 127.0.0.1:8888:8888 sagemath/sagemath sage -notebook=jupyter --no-browser --ip='*' --port=8888
+
+The `--ip` option is required by the Jupyter notebook to allow connections to
+the notebook through the Docker network.  However, this usage is cumbersome and
+not recommended.
+
+Instead, use the `sagemath/sagemath-jupyter` image, which is configured to
+run `sage -notebook=juptyer` with the correct configuration when run like:
+
+    docker run -p 8888:8888 sagemath/sagemath-jupyter
 
 You can then connect your web browser to the printed out address
 (typically http://localhost:8888).
 
-Similarly, to run the legacy Sage notebook server:
+To run the legacy Sage notebook server:
 
-    docker run --net="host" sagemath/sagemath sage -notebook
+    docker run -p 8080:8080 sagemath/sagemath sage -notebook
 
 Login: admin, password: sage
+
+Note that the default port for Sage notebook server is 8080, whereas we
+use 8888 by default for the Jupyter notebook.
 
 ### Rebuilding the container
 
@@ -79,15 +91,21 @@ To download and start it:
 If you want to have a container already set up for the Jupyter enviroment,
 you can use sagemath/sagemath-jupyter. It is based on sagemath/sagemath.
 
-    docker run -p 127.0.0.1:8888:8888 sagemath/sagemath-jupyter
+    docker run -p 8888:8888 sagemath/sagemath-jupyter
 
 makes the Jupyter notebook accessible via `localhost:8888`, while
 
     docker run sagemath/sagemath-jupyter
 
-makes it accessible under the containers ip address on port `8888`. You can
-see the ip address of the container using `docker inspect`. This is useful
-if you want to have more than one notebook server running.
+makes it accessible under the container's ip address on port `8888`. You can
+see the ip address of the container using `docker inspect`. This is useful if
+you want to have more than one notebook server running.  Typically this will
+be something like:
+
+    172.17.0.1
+
+where the fourth field may be incremented depending on the number of running
+containers on the host.
 
 ### Rebuilding the container
 
