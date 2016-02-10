@@ -55,6 +55,26 @@ run `sage -notebook=juptyer` with the correct configuration when run like:
 You can then connect your web browser to the printed out address
 (typically http://localhost:8888).
 
+**Note for Windows:** An additional step is required on Windows in order to
+connect to the notebook via localhost.  This is because Docker on Windows
+involves two layers of virtualization: It runs a small Linux VM in VirtualBox
+in order to run the main Docker engine, which does not run natively on Windows.
+Then Docker containers are run within that VM.
+
+Because of this, even when using port forwarding as above, this only forwards
+ports on the Linux VM "host", and not on your physical host OS.  Therefore
+connecting via `localhost`/`127.0.0.1` does not immediately work.  In order for
+this to work we also need to set up port forwarding from your physical host OS
+to the Linux VM.  To do this open a command prompt and run:
+
+    "C:\Program Files\Oracle\VirtualBox\VBoxManage" modifyvm "default" --natfp1 "sagemath-jupyter,tcp,,8888,,8888"
+    
+Or if the VM is already running you can modify the running VM too.  To just replace `modifyvm "default" --natfp1`
+with `controlvm "default" natfp1` (yes, the command line interfaces are slightly inconsistent).
+
+This change should be persistent and need not be repeated unless the Docker VM
+is uninstalled and reinstalled (or possibly if it is upgraded--TBD).
+
 To run the legacy Sage notebook server:
 
     docker run -p 8080:8080 sagemath/sagemath sage -notebook
