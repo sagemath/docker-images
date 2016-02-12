@@ -1,10 +1,12 @@
-# Containers for SageMath & friends
+# (Experimental) containers for SageMath & friends
 
 This repository contains a collection of dockerfiles and supporting
-files for building various SageMath containers.
+files for building various containers for SageMath and its components
+(GAP, Singular, PARI/GP, ...).
 
-Those containers are in the build; we will upload them soon on
-Dockerhub.  Note however that they are experimental; use with caution!
+The containers are available on [dockerhub](https://hub.docker.com/u/sagemath/).
+At this stage, they are still experimental; *use with caution*.
+The intention is to superseed the other existing SageMath containers.
 
 ## [sagemath/sagemath](sagemath/Dockerfile) (roughly 7GB)
 
