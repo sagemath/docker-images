@@ -41,21 +41,22 @@ Other software included in this image can be run similarly:
 
 ### Running the Notebook interfaces
 
-To start the Jupyter notebook server you can start the container with the following command:
+Running the Jupyter Notebook interface (for Sage, ...):
+
+    docker run -p 8888:8888 sagemath/sagemath-jupyter
+
+Running the legacy Sage notebook server:
+
+    docker run -p 8080:8080 sagemath/sagemath sage -notebook
+
+You can then connect your web browser to the printed out address, namely http://localhost:8888 for the jupyter notebook and http://localhost:8080 for the legacy notebook. For the legacy notebook the webbrowser will ask for a login and password which are respectively `admin` and `sage`.
+
+**Note** Running the sagemath-jupyter container is equivalent to running the `sagemath/sagemath` base docker container with the following command:
 
     docker run -p 127.0.0.1:8888:8888 sagemath/sagemath sage -notebook=jupyter --no-browser --ip='*' --port=8888
 
 The `--ip` option is required by the Jupyter notebook to allow connections to
-the notebook through the Docker network.  However, this usage is cumbersome and
-not recommended.
-
-Instead, use the `sagemath/sagemath-jupyter` image, which is configured to
-run `sage -notebook=juptyer` with the correct configuration when run like:
-
-    docker run -p 8888:8888 sagemath/sagemath-jupyter
-
-You can then connect your web browser to the printed out address
-(typically http://localhost:8888).
+the notebook through the Docker network.
 
 **Note for Windows:** An additional step is required on Windows in order to
 connect to the notebook via localhost.  This is because Docker on Windows
@@ -76,15 +77,6 @@ with `controlvm "default" natfp1` (yes, the command line interfaces are slightly
 
 This change should be persistent and need not be repeated unless the Docker VM
 is uninstalled and reinstalled (or possibly if it is upgraded--TBD).
-
-To run the legacy Sage notebook server:
-
-    docker run -p 8080:8080 sagemath/sagemath sage -notebook
-
-Login: admin, password: sage
-
-Note that the default port for Sage notebook server is 8080, whereas we
-use 8888 by default for the Jupyter notebook.
 
 ### Rebuilding the container
 
@@ -109,6 +101,8 @@ To download and start it:
     docker build --tag="sagemath/sagemath-develop" sagemath-develop
 
 ## [sagemath/sagemath-jupyter](sagemath-jupyter/Dockerfile)
+
+TODO: fix the duplicated documentation for running the Jupyter notebook
 
 If you want to have a container already set up for the Jupyter enviroment,
 you can use sagemath/sagemath-jupyter. It is based on sagemath/sagemath.
