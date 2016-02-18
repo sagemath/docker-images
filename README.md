@@ -39,17 +39,17 @@ Other software included in this image can be run similarly:
 
     docker run -it sagemath/sagemath singular
 
-### Running the Notebook interfaces
+### Running the notebook interfaces
 
-Running the Jupyter Notebook interface (for Sage, ...):
+To run the Jupyter Notebook interface (for Sage, ...):
 
     docker run -p 8888:8888 sagemath/sagemath-jupyter
 
-Running the legacy Sage notebook server:
+Alternatively, to run the legacy Sage notebook server:
 
     docker run -p 8080:8080 sagemath/sagemath sage -notebook
 
-You can then connect your web browser to the printed out address, namely http://localhost:8888 for the jupyter notebook and http://localhost:8080 for the legacy notebook. For the legacy notebook the webbrowser will ask for a login and password which are respectively `admin` and `sage`.
+You can then connect your web browser to the printed out typically, namely http://localhost:8888 for the Jupyter notebook and http://localhost:8080 for the legacy notebook. For the legacy notebook the webbrowser will ask for a login and password which are respectively `admin` and `sage`.
 
 **Note** Running the sagemath-jupyter container is equivalent to running the `sagemath/sagemath` base docker container with the following command:
 
