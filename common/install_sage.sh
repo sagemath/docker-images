@@ -33,8 +33,9 @@ sudo -H -E -u sage make || exit 1
 ln -sf "${SAGE_SRC_TARGET}/sage/sage" /usr/bin/sage
 ln -sf "${SAGE_SRC_TARGET}/sage/sage" /usr/bin/sagemath
 
-# Setup the admin password for Sage's lecacy notebook to avoid need for later user interaction
-./sage <<EOFSAGE
+# Setup the admin password for Sage's lecacy notebook to avoid need for later
+# user interaction
+sudo -H -u sage ./sage <<EOFSAGE
     from sage.misc.misc import DOT_SAGE
     from sagenb.notebook import notebook
     directory = DOT_SAGE+'sage_notebook'
