@@ -24,6 +24,9 @@ chown -R sage:sage sage
 cd sage
 
 # Sage can't be built as root, for reasons...
+# Here -E inherits the environment from root, however it's important to
+# include -H to set HOME=/home/sage, otherwise DOT_SAGE will not be set
+# correctly and the build will fail!
 sudo -H -E -u sage make || exit 1
 
 # Put scripts to start gap, gp, maxima, ... in /usr/bin
@@ -35,6 +38,8 @@ ln -sf "${SAGE_SRC_TARGET}/sage/sage" /usr/bin/sagemath
 
 # Setup the admin password for Sage's lecacy notebook to avoid need for later
 # user interaction
+# This should also be run as the 'sage' user to ensure that the resulting
+# configuration is written to their DOT_SAGE
 sudo -H -u sage ./sage <<EOFSAGE
     from sage.misc.misc import DOT_SAGE
     from sagenb.notebook import notebook
