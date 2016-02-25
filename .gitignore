@@ -1,1 +1,7 @@
 *.log
+
+# Generated files
+*/scripts/common
+
+# Editor files
+*.sw[po]

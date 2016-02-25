@@ -1,11 +1,17 @@
-all: check_postinstall
+.PHONY: all build clean docker-clean sagemath-develop-test
 
 # Images and their dependencies
 IMAGES=sagemath sagemath-develop sagemath-jupyter sagemath-patchbot
 
-sagemath: sagemath/install_sage.sh sagemath/postinstall_sage.sh
+common_scripts:=$(wildcard common/*.sh)
+common_script_copies:=$(addprefix %/scripts/, $(common_scripts))
+scripts=$(common_script_copies)
 
-sagemath-develop: sagemath/install_sage.sh sagemath/postinstall_sage.sh
+all: build
+
+sagemath: %: $(scripts)
+
+sagemath-develop: %: $(scripts)
 
 sagemath-jupyter: sagemath
 
@@ -17,6 +23,9 @@ build: $(IMAGES)
 
 push:
 	for image in $(IMAGES); do docker push sagemath/$$image; done
+
+clean:
+	for image in $(IMAGES); do rm -rf $(image)/scripts/common; done
 
 # Refs:
 # - https://www.calazan.com/docker-cleanup-commands/
@@ -31,12 +40,15 @@ docker-clean:
 
 # Takes care of common file that we need to duplicate in several subdirectories
 # See https://github.com/docker/docker/issues/1676
-%/postinstall_sage.sh: postinstall_sage.sh
-	cp $< > $@
+$(common_script_copies): $(common_scripts)
+	@echo "Copying $< > $@"
+	mkdir -p $(@D)
+	head -1 $< > $@
+	echo "# !!! GENERATED FILE: DO NOT MODIFY! !!!" >> $@
+	tail -n +2 $< >> $@
 
-
-sagemat%: sagemat%/Dockerfile FORCE
-	echo Building sagemath/$@
+$(IMAGES): %: %/Dockerfile FORCE
+	@echo Building sagemath/$@
 	time docker build --tag="sagemath/$@" $@ 2>&1 | tee $@.log
 
 FORCE:
