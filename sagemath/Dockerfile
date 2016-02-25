@@ -21,7 +21,7 @@ RUN chmod -R +x /tmp/scripts
 # make source checkout target, then run the install script
 # see https://github.com/docker/docker/issues/9547 for the sync
 RUN    mkdir -p $SAGE_SRC_TARGET \
-    && /tmp/scripts/common/install_sage.sh $SAGE_SRC_TARGET $SAGE_BRANCH \
+    && /tmp/scripts/install_sage.sh $SAGE_SRC_TARGET $SAGE_BRANCH \
     && sync \
     && rm -rf /tmp/scripts
 
