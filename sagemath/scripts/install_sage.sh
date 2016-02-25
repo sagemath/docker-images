@@ -55,7 +55,11 @@ EOFSAGE
 #
 # Unfortunately none of the existing make targets for sage cover this ground
 # exactly
-make misc-clean
-make -C src/ clean
-rm -rf upstream/
-rm -rf src/doc/output/doctrees/
+
+# For the 'develop' image we leave everything as it would be after a
+# successful sage build
+if [ $BRANCH != "develop" ]; then
+  make micro_release
+  rm -rf upstream/
+  rm -rf src/doc/output/doctrees/
+fi
