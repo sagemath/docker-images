@@ -59,7 +59,12 @@ EOFSAGE
 # For the 'develop' image we leave everything as it would be after a
 # successful sage build
 if [ $BRANCH != "develop" ]; then
-  make micro_release
+  make misc-clean
+  make -C src/ clean
+
   rm -rf upstream/
   rm -rf src/doc/output/doctrees/
+
+  # Strip binaries
+  LC_ALL=C find local/lib local/bin -type f -exec strip '{}' ';' 2>&1 | grep -v "File format not recognized" |  grep -v "File truncated" || true
 fi
