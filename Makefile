@@ -30,11 +30,11 @@ docker-clean:
 
 $(filter-out %-develop, $(IMAGES)): %: %/Dockerfile FORCE
 	@echo Building sagemath/$@
-	time docker build --tag="sagemath/$@" $@ 2>&1 | tee $@.log
+	time docker build $(DOCKER_BUILD_FLAGS) --tag="sagemath/$@" $@ 2>&1 | tee $@.log
 
 $(filter %-develop, $(IMAGES)): %-develop: %/Dockerfile FORCE
 	@echo Building sagemath/$@
-	time docker build --tag="sagemath/$@" --build-arg SAGE_BRANCH=develop $(@:-develop=) 2>&1 | tee $@.log
+	time docker build $(DOCKER_BUILD_FLAGS) --tag="sagemath/$@" --build-arg SAGE_BRANCH=develop $(@:-develop=) 2>&1 | tee $@.log
 
 FORCE:
 
