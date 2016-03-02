@@ -20,10 +20,12 @@ COPY scripts/ /tmp/scripts
 RUN chmod -R +x /tmp/scripts
 # make source checkout target, then run the install script
 # see https://github.com/docker/docker/issues/9547 for the sync
+# clear out /tmp too--shouldn't need anything that's in there after
+# the build (~20 MB of temp files)
 RUN    mkdir -p $SAGE_SRC_TARGET \
     && /tmp/scripts/install_sage.sh $SAGE_SRC_TARGET $SAGE_BRANCH \
     && sync \
-    && rm -rf /tmp/scripts
+    && rm -rf /tmp/*
 
 USER sage
 ENV HOME /home/sage
