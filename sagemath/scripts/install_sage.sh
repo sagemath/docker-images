@@ -17,6 +17,9 @@ fi
 N_CORES=$(cat /proc/cpuinfo | grep processor | wc -l)
 
 export SAGE_FAT_BINARY="yes"
+# Just to be sure Sage doesn't try to build its own GCC (even though
+# it shouldn't with a recent GCC package from the system and with gfortran)
+export SAGE_INSTALL_GCC="no"
 export MAKE="make -j${N_CORES}"
 cd "$SAGE_SRC_TARGET"
 git clone --depth 1 --branch ${BRANCH} https://github.com/sagemath/sage.git
