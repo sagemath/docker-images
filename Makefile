@@ -1,17 +1,12 @@
-.PHONY: all build clean docker-clean sagemath-develop-test
-
 # Images and their dependencies
 IMAGES=sagemath sagemath-develop sagemath-jupyter sagemath-patchbot
-
-common_scripts:=$(wildcard common/*.sh)
-common_script_copies:=$(addprefix %/scripts/, $(common_scripts))
-scripts=$(common_script_copies)
+.PHONY: all build push docker-clean sagemath-develop-test FORCE $(IMAGES)
 
 all: build
 
-sagemath: %: $(scripts)
+sagemath:
 
-sagemath-develop: %: $(scripts)
+sagemath-develop:
 
 sagemath-jupyter: sagemath
 
@@ -24,32 +19,22 @@ build: $(IMAGES)
 push:
 	for image in $(IMAGES); do docker push sagemath/$$image; done
 
-clean:
-	for image in $(IMAGES); do rm -rf $(image)/scripts/common; done
-
 # Refs:
 # - https://www.calazan.com/docker-cleanup-commands/
 # - http://stackoverflow.com/questions/17236796/how-to-remove-old-docker-containers
 docker-clean:
-	echo "Remove all non running containers"
+	@echo "Remove all non running containers"
 	-docker rm `docker ps -q -f status=exited`
-	echo "Delete all untagged/dangling (<none>) images"
+	@echo "Delete all untagged/dangling (<none>) images"
 	-docker rmi `docker images -q -f dangling=true`
 
-# Utilities
-
-# Takes care of common file that we need to duplicate in several subdirectories
-# See https://github.com/docker/docker/issues/1676
-$(common_script_copies): $(common_scripts)
-	@echo "Copying $< > $@"
-	mkdir -p $(@D)
-	head -1 $< > $@
-	echo "# !!! GENERATED FILE: DO NOT MODIFY! !!!" >> $@
-	tail -n +2 $< >> $@
-
-$(IMAGES): %: %/Dockerfile FORCE
+$(filter-out %-develop, $(IMAGES)): %: %/Dockerfile FORCE
 	@echo Building sagemath/$@
-	time docker build --tag="sagemath/$@" $@ 2>&1 | tee $@.log
+	time docker build $(DOCKER_BUILD_FLAGS) --tag="sagemath/$@" $@ 2>&1 | tee $@.log
+
+$(filter %-develop, $(IMAGES)): %-develop: %/Dockerfile FORCE
+	@echo Building sagemath/$@
+	time docker build $(DOCKER_BUILD_FLAGS) --tag="sagemath/$@" --build-arg SAGE_BRANCH=develop $(@:-develop=) 2>&1 | tee $@.log
 
 FORCE:
 
