@@ -70,10 +70,10 @@ connecting via `localhost`/`127.0.0.1` does not immediately work.  In order for
 this to work we also need to set up port forwarding from your physical host OS
 to the Linux VM.  To do this open a command prompt and run:
 
-    "C:\Program Files\Oracle\VirtualBox\VBoxManage" modifyvm "default" --natfp1 "sagemath-jupyter,tcp,,8888,,8888"
+    "C:\Program Files\Oracle\VirtualBox\VBoxManage" modifyvm "default" -natpf1 "sagemath-jupyter,tcp,,8888,,8888"
     
-Or if the VM is already running you can modify the running VM too.  To just replace `modifyvm "default" --natfp1`
-with `controlvm "default" natfp1` (yes, the command line interfaces are slightly inconsistent).
+Or if the VM is already running you can modify the running VM too.  To just replace `modifyvm "default" --natpf1`
+with `controlvm "default" natpf1` (yes, the command line interfaces are slightly inconsistent).
 
 This change should be persistent and need not be repeated unless the Docker VM
 is uninstalled and reinstalled (or possibly if it is upgraded--TBD).
