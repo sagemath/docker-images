@@ -22,10 +22,9 @@ RUN chmod -R +x /tmp/scripts
 # see https://github.com/docker/docker/issues/9547 for the sync
 RUN    mkdir -p $SAGE_SRC_TARGET \
     && /tmp/scripts/install_sage.sh $SAGE_SRC_TARGET $SAGE_BRANCH \
-    && sync \
-    && rm -rf /tmp/*
+    && sync
 
-RUN /tmp/scripts/post_install_sage.sh && sync
+RUN /tmp/scripts/post_install_sage.sh && rm -rf /tmp/* && sync
 
 USER sage
 ENV HOME /home/sage
