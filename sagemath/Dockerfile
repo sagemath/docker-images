@@ -31,6 +31,10 @@ USER sage
 ENV HOME /home/sage
 ENV SHELL /bin/bash
 
+# The sage banner crashes Docker :(
+# see https://github.com/docker/docker/issues/21323
+ENV SAGE_BANNER no
+
 WORKDIR /home/sage
 
 EXPOSE 8080
