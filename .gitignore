@@ -1,1 +1,4 @@
 *.log
+
+# Editor files
+*.sw[po]

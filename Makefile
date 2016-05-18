@@ -1,11 +1,12 @@
-all: check_postinstall
-
 # Images and their dependencies
 IMAGES=sagemath sagemath-develop sagemath-jupyter sagemath-patchbot
+.PHONY: all build push docker-clean sagemath-develop-test FORCE $(IMAGES)
 
-sagemath: sagemath/install_sage.sh sagemath/postinstall_sage.sh
+all: build
 
-sagemath-develop: sagemath/install_sage.sh sagemath/postinstall_sage.sh
+sagemath:
+
+sagemath-develop:
 
 sagemath-jupyter: sagemath
 
@@ -22,22 +23,18 @@ push:
 # - https://www.calazan.com/docker-cleanup-commands/
 # - http://stackoverflow.com/questions/17236796/how-to-remove-old-docker-containers
 docker-clean:
-	echo "Remove all non running containers"
+	@echo "Remove all non running containers"
 	-docker rm `docker ps -q -f status=exited`
-	echo "Delete all untagged/dangling (<none>) images"
+	@echo "Delete all untagged/dangling (<none>) images"
 	-docker rmi `docker images -q -f dangling=true`
 
-# Utilities
+$(filter-out %-develop, $(IMAGES)): %: %/Dockerfile FORCE
+	@echo Building sagemath/$@
+	time docker build $(DOCKER_BUILD_FLAGS) --tag="sagemath/$@" $@ 2>&1 | tee $@.log
 
-# Takes care of common file that we need to duplicate in several subdirectories
-# See https://github.com/docker/docker/issues/1676
-%/postinstall_sage.sh: postinstall_sage.sh
-	cp $< > $@
-
-
-sagemat%: sagemat%/Dockerfile FORCE
-	echo Building sagemath/$@
-	time docker build --tag="sagemath/$@" $@ 2>&1 | tee $@.log
+$(filter %-develop, $(IMAGES)): %-develop: %/Dockerfile FORCE
+	@echo Building sagemath/$@
+	time docker build $(DOCKER_BUILD_FLAGS) --tag="sagemath/$@" --build-arg SAGE_BRANCH=develop $(@:-develop=) 2>&1 | tee $@.log
 
 FORCE:
 
