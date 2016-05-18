@@ -55,3 +55,4 @@ sagemath-develop-test:
 	echo "1+1;" | docker run sagemath/sagemath-develop singular
 	echo "All tests passed"
 
+# TODO: run ptestlong inside the docker image and report
