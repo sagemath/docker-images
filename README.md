@@ -145,6 +145,8 @@ fetches and run cannot harm the host machine.
     nsenter -t $pid -n iptables -A FORWARD -s ${ip} -d ${patchbot_ip} -j ACCEPT
     nsenter -t $pid -n iptables -A FORWARD -s ${ip} -j REJECT --reject-with icmp-host-prohibited
 
+    while true; docker run --tty=true --rm=true sagemath/sagemath-patchbot; done
+
 ### Rebuilding the container:
 
     docker build --tag="sagemath/sagemath-patchbot" sagemath-patchbot
@@ -156,3 +158,13 @@ sagemath/sagemath with latex, the commonly used (GAP) packages, etc.
 ## sagemath/sagemath-fat-jupyter (in the plan)
 
 Same as sagemath-jupyter, but based on sagemath-fat
+
+## Infrastructure in Paris Sud for building the images
+
+We have a machine on the Paris Sud University cloud for building images
+
+### Steps to recreate that machine
+
+- Connect https://slipstream.stratuslab.eu/
+- Go to the App store
+- Choose the Ubuntu App -> Deploy
