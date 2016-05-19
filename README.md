@@ -71,7 +71,7 @@ this to work we also need to set up port forwarding from your physical host OS
 to the Linux VM.  To do this open a command prompt and run:
 
     "C:\Program Files\Oracle\VirtualBox\VBoxManage" modifyvm "default" -natpf1 "sagemath-jupyter,tcp,,8888,,8888"
-    
+
 Or if the VM is already running you can modify the running VM too.  To just replace `modifyvm "default" --natpf1`
 with `controlvm "default" natpf1` (yes, the command line interfaces are slightly inconsistent).
 
@@ -169,35 +169,35 @@ We have a virtual machine on the Paris Sud University cloud for building images.
 - Login with stratuslab domain and your credentials
 - Flavor: os.16, image: Ubuntu 14.04
 
-- Connect on the machine and run the following commands
+- Connect on the machine and run the following commands:
 
-    ssh ubuntu@...
-    sudo su -
+        ssh ubuntu@...
+        sudo su -
 
-    # TODO: update this for openstack; not needed with the current default disk space
-    # mkdir /var/lib/docker
-    # echo /dev/vdc /var/lib/docker ext4 errors=remount-ro 0 1 >> /etc/fstab
+        # TODO: update this for openstack; not needed with the current default disk space
+        # mkdir /var/lib/docker
+        # echo /dev/vdc /var/lib/docker ext4 errors=remount-ro 0 1 >> /etc/fstab
 
-    # Taken from https://docs.docker.com/engine/installation/linux/ubuntulinux/
-    apt-get install -y apt-transport-https ca-certificates software-properties-common build-essential
-    apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
-    # This does not quite work; one gets "... trusty main" in /etc/sources.list instead of "ubuntu-trusty main"
-    # add-apt-repository https://apt.dockerproject.org/repo
+        # Taken from https://docs.docker.com/engine/installation/linux/ubuntulinux/
+        apt-get install -y apt-transport-https ca-certificates software-properties-common build-essential
+        apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+        # This does not quite work; one gets "... trusty main" in /etc/sources.list instead of "ubuntu-trusty main"
+        # add-apt-repository https://apt.dockerproject.org/repo
 
-    echo deb https://apt.dockerproject.org/repo ubuntu-trusty main > /etc/apt/sources.list.d/docker.list
-    apt-get update
-    apt-get install -y apparmor linux-image-extra-$(uname -r) docker-engine git make
-    groupadd docker
-    usermod -aG docker ubuntu
-    service docker restart
+        echo deb https://apt.dockerproject.org/repo ubuntu-trusty main > /etc/apt/sources.list.d/docker.list
+        apt-get update
+        apt-get install -y apparmor linux-image-extra-$(uname -r) docker-engine git make
+        groupadd docker
+        usermod -aG docker ubuntu
+        service docker restart
 
 - log-out completely (for ubuntu's docker permission) / log-in again as ubuntu
 
 - Reconnect on the machine and run the following commands:
 
-    ssh ubuntu@...
-    docker run hello-world
+        ssh ubuntu@...
+        docker run hello-world
 
-    git clone https://github.com/sagemath/docker-images.git
-    cd docker-images
-    make             # you probably want to run this with screen or byobu
+        git clone https://github.com/sagemath/docker-images.git
+        cd docker-images
+        make             # you probably want to run this with screen or byobu
