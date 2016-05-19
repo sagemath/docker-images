@@ -1,6 +1,6 @@
 FROM ubuntu:wily
 
-MAINTAINER Sebastian Gutsche <sebastian.gutsche@gmail.com>
+MAINTAINER Erik M. Bray <erik.bray@lri.fr>
 
 ARG SAGE_SRC_TARGET=/opt
 # Note: SAGE_BRANCH may also be a tag name

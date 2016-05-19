@@ -1,6 +1,6 @@
 FROM sagemath/sagemath
 
-MAINTAINER Sebastian Gutsche <sebastian.gutsche@gmail.com>
+MAINTAINER Erik M. Bray <erik.bray@lri.fr>
 
 EXPOSE 8888
 

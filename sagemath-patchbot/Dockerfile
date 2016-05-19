@@ -1,5 +1,5 @@
 FROM sagemath/sagemath-develop
-MAINTAINER Sebastian Gutsche <sebastian.gutsche@gmail.com>
+MAINTAINER Erik M. Bray <erik.bray@lri.fr>
 
 # By default, the patchbot starts by setting up a couple things and
 # running all the tests once to check that the base installation is
