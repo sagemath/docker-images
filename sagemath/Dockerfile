@@ -12,8 +12,6 @@ RUN    apt-get update -qq \
     && rm -rf /var/lib/apt/lists/*
 
 RUN    adduser --quiet --shell /bin/bash --gecos "Sage user,101,," --disabled-password sage \
-    && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
-    && adduser sage sudo \
     && chown -R sage:sage /home/sage/
 
 COPY scripts/ /tmp/scripts
