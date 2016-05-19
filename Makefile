@@ -2,6 +2,8 @@
 IMAGES=sagemath sagemath-develop sagemath-jupyter sagemath-patchbot
 .PHONY: all build push docker-clean sagemath-develop-test FORCE $(IMAGES)
 
+SAGE_VERSION ?= 7.0
+
 all: build
 
 sagemath:
@@ -30,7 +32,7 @@ docker-clean:
 
 $(filter-out %-develop, $(IMAGES)): %: %/Dockerfile FORCE
 	@echo Building sagemath/$@
-	time docker build $(DOCKER_BUILD_FLAGS) --tag="sagemath/$@" $@ 2>&1 | tee $@.log
+	time docker build $(DOCKER_BUILD_FLAGS) --tag="sagemath/$@:$(SAGE_VERSION)" --build-arg SAGE_BRANCH=$(SAGE_VERSION) $@ 2>&1 | tee $@.log
 
 $(filter %-develop, $(IMAGES)): %-develop: %/Dockerfile FORCE
 	@echo Building sagemath/$@
