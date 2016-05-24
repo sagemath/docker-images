@@ -2,7 +2,7 @@
 IMAGES=sagemath sagemath-develop sagemath-jupyter sagemath-patchbot
 .PHONY: all build push docker-clean sagemath-develop-test FORCE $(IMAGES)
 
-SAGE_VERSION ?= 7.0
+SAGE_VERSION ?= 7.2
 
 all: build
 
