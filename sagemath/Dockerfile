@@ -28,9 +28,10 @@ USER sage
 ENV HOME /home/sage
 ENV SHELL /bin/bash
 
-# The sage banner crashes Docker :(
+# The unicode sage banner crashes Docker :(
 # see https://github.com/docker/docker/issues/21323
-ENV SAGE_BANNER no
+# The "bare" banner is ASCII only
+ENV SAGE_BANNER bare
 
 WORKDIR /home/sage
 
