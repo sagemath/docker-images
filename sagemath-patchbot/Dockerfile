@@ -1,6 +1,7 @@
 FROM sagemath/sagemath-develop
 MAINTAINER Erik M. Bray <erik.bray@lri.fr>
 
+ARG SAGE_BRANCH=develop
 # By default, the patchbot starts by setting up a couple things and
 # running all the tests once to check that the base installation is
 # correct. Here we make sure to do this base check only once, at
