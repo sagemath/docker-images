@@ -1,10 +1,16 @@
 # Images and their dependencies
 IMAGES=sagemath sagemath-develop sagemath-jupyter sagemath-patchbot
-.PHONY: all build push docker-clean sagemath-develop-test FORCE $(IMAGES)
+BUILD_IMAGES=$(addprefix build-,$(IMAGES))
+TEST_IMAGES=$(addprefix test-,$(IMAGES))
+PUSH_IMAGES=$(addprefix push-,$(IMAGES))
+.PHONY: all build push docker-clean $(IMAGES) $(BUILD_IMAGES) $(TEST_IMAGES) $(PUSH_IMAGES)
 
-SAGE_VERSION ?= 7.2
+SAGE_VERSION ?= 7.4
+TAG_LATEST ?= 1
 
-all: build
+all: $(IMAGES)
+
+release: sagemath sagemath-jupyter
 
 sagemath:
 
@@ -16,10 +22,11 @@ sagemath-patchbot: sagemath-develop
 
 # Main rules
 
-build: $(IMAGES)
+$(IMAGES): %: build-% test-% push-%
 
-push:
-	for image in $(IMAGES); do docker push sagemath/$$image; done
+build: $(BUILD_IMAGES)
+test: $(TEST_IMAGES)
+push: $(PUSH_IMAGES)
 
 # Refs:
 # - https://www.calazan.com/docker-cleanup-commands/
@@ -30,28 +37,28 @@ docker-clean:
 	@echo "Delete all untagged/dangling (<none>) images"
 	-docker rmi `docker images -q -f dangling=true`
 
-$(filter-out %-develop, $(IMAGES)): %: %/Dockerfile FORCE
-	@echo Building sagemath/$@
-	time docker build $(DOCKER_BUILD_FLAGS) --tag="sagemath/$@:$(SAGE_VERSION)" --build-arg SAGE_BRANCH=$(SAGE_VERSION) $@ 2>&1 | tee $@.log
 
-$(filter %-develop, $(IMAGES)): %-develop: %/Dockerfile FORCE
-	@echo Building sagemath/$@
-	time docker build $(DOCKER_BUILD_FLAGS) --tag="sagemath/$@" --build-arg SAGE_BRANCH=develop $(@:-develop=) 2>&1 | tee $@.log
+$(filter-out build-%-develop, $(BUILD_IMAGES)): build-%: %/Dockerfile
+	@echo Building sagemath/$*
+	time docker build $(DOCKER_BUILD_FLAGS) --tag="sagemath/$*:$(SAGE_VERSION)" --build-arg SAGE_BRANCH=$(SAGE_VERSION) $* 2>&1 | tee $*.log
+ifeq ($(TAG_LATEST),1)
+	docker tag "sagemath/$*:$(SAGE_VERSION)" "sagemath/$*:latest"
+endif
 
-FORCE:
+$(filter build-%-develop, $(BUILD_IMAGES)): build-%-develop: %/Dockerfile
+	@echo Building sagemath/$*-develop
+	time docker build $(DOCKER_BUILD_FLAGS) --tag="sagemath/$*-develop" --build-arg SAGE_BRANCH=develop $* 2>&1 | tee $*-develop.log
 
-# Tests
+$(TEST_IMAGES): test-%: build-%
+	@echo Testing $*
+	docker run sagemath/$* sage -t -a --long
+	@echo "All tests passed"
 
-sagemath-develop-test:
-	echo "1+1;" | docker run sagemath/sagemath-develop gap
-	echo "1+1;" | docker run sagemath/sagemath-develop gp
-	echo "1+1;" | docker run sagemath/sagemath-develop ipython
-	echo "1+1;" | docker run sagemath/sagemath-develop maxima
-	echo ""     | docker run sagemath/sagemath-develop mwrank
-	echo "1+1;" | docker run sagemath/sagemath-develop R --no-save
-	echo "1+1;" | docker run sagemath/sagemath-develop sage
-	echo "1+1;" | docker run sagemath/sagemath-develop sagemath
-	echo "1+1;" | docker run sagemath/sagemath-develop singular
-	echo "All tests passed"
+$(PUSH_IMAGES): push-%: build-% test-%
+	@echo Pushing $*
+	$(if $(findstring -develop,$*),docker push "sagemath/$*",docker push "sagemath/$*:$(SAGE_VERSION)")
+ifeq ($(TAG_LATEST),1)
+	$(if $(findstring -develop,$*),,docker push "sagemath/$*:latest")
+endif
 
 # TODO: run ptestlong inside the docker image and report
