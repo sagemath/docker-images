@@ -51,7 +51,10 @@ $(filter build-%-develop, $(BUILD_IMAGES)): build-%-develop: %/Dockerfile
 
 $(TEST_IMAGES): test-%: build-%
 	@echo Testing $*
-	docker run sagemath/$* sage -t -p 0 -a --long
+	$(if $(findstring -develop,$*), \
+		docker run sagemath/$* sage -t -p 0 -a --long, \
+		docker run sagemath/$*:$(SAGE_VERSION) sage -t -p 0 -a --long \
+	)
 	@echo "All tests passed"
 
 $(PUSH_IMAGES): push-%: build-% test-%
