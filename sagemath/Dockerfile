@@ -2,10 +2,6 @@ FROM ubuntu:wily
 
 MAINTAINER Erik M. Bray <erik.bray@lri.fr>
 
-ARG SAGE_SRC_TARGET=/opt
-# Note: SAGE_BRANCH may also be a tag name
-ARG SAGE_BRANCH=master
-
 RUN    apt-get update -qq \
     && apt-get install -y wget build-essential gfortran automake m4 dpkg-dev sudo python libssl-dev git \
     && apt-get clean \
@@ -13,6 +9,10 @@ RUN    apt-get update -qq \
 
 RUN    adduser --quiet --shell /bin/bash --gecos "Sage user,101,," --disabled-password sage \
     && chown -R sage:sage /home/sage/
+
+ARG SAGE_SRC_TARGET=/opt
+# Note: SAGE_BRANCH may also be a tag name
+ARG SAGE_BRANCH=master
 
 COPY scripts/ /tmp/scripts
 RUN chmod -R +x /tmp/scripts
