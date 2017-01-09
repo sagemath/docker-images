@@ -5,7 +5,7 @@ SAGE_SRC_TARGET=${1%/}
 BRANCH=$2
 
 if [ -z $SAGE_SRC_TARGET ]; then
-  >&2 echo "Must specifiy a target directory for the sage source checkout"
+  >&2 echo "Must specify a target directory for the sage source checkout"
   exit 1
 fi
 
