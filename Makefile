@@ -6,7 +6,7 @@ PUSH_IMAGES=$(addprefix push-,$(IMAGES))
 .PHONY: all build push docker-clean $(IMAGES) $(BUILD_IMAGES) $(TEST_IMAGES) $(PUSH_IMAGES)
 
 SAGE_VERSION ?= 7.4
-TAG_LATEST ?= 1
+TAG_LATEST ?= 0
 
 all: $(IMAGES)
 
