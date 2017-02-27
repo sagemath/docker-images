@@ -8,7 +8,9 @@ RUN    apt-get update -qq \
     && rm -rf /var/lib/apt/lists/*
 
 RUN    adduser --quiet --shell /bin/bash --gecos "Sage user,101,," --disabled-password sage \
-    && chown -R sage:sage /home/sage/
+    && chown -R sage:sage /home/sage/ \
+    && echo "sage ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/01-sage \
+    && chmod 0440 /etc/sudoers.d/01-sage
 
 ARG SAGE_SRC_TARGET=/opt
 # Note: SAGE_BRANCH may also be a tag name

@@ -50,6 +50,7 @@ if [ $BRANCH != "develop" ]; then
 
   rm -rf upstream/
   rm -rf src/doc/output/doctrees/
+  rm -rf .git
 
   # Strip binaries
   LC_ALL=C find local/lib local/bin -type f -exec strip '{}' ';' 2>&1 | grep -v "File format not recognized" |  grep -v "File truncated" || true
