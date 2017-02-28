@@ -3,7 +3,8 @@ IMAGES=sagemath sagemath-develop sagemath-jupyter sagemath-patchbot
 BUILD_IMAGES=$(addprefix build-,$(IMAGES))
 TEST_IMAGES=$(addprefix test-,$(IMAGES))
 PUSH_IMAGES=$(addprefix push-,$(IMAGES))
-.PHONY: all build push docker-clean $(IMAGES) $(BUILD_IMAGES) $(TEST_IMAGES) $(PUSH_IMAGES)
+.PHONY: all build push docker-clean sagemath-base sagemath-local-develop \
+	$(IMAGES) $(BUILD_IMAGES) $(TEST_IMAGES) $(PUSH_IMAGES)
 
 SAGE_VERSION ?= 7.4
 TAG_LATEST ?= 0
@@ -12,13 +13,15 @@ all: $(IMAGES)
 
 release: sagemath sagemath-jupyter
 
-sagemath:
+sagemath: sagemath-base
 
-sagemath-develop:
+sagemath-develop: sagemath-base
 
 sagemath-jupyter: sagemath
 
 sagemath-patchbot: sagemath-develop
+
+sagemath-local-develop: sagemath-base
 
 # Main rules
 
@@ -37,6 +40,9 @@ docker-clean:
 	@echo "Delete all untagged/dangling (<none>) images"
 	-docker rmi `docker images -q -f dangling=true`
 
+sagemath-base sagemath-local-develop: %: %/Dockerfile
+	@echo Building $@ image
+	time docker build $(DOCKER_BUILD_FLAGS) --tag=sagemath/$@ $(dir $<) 2>&1 | tee $<.log
 
 $(filter-out build-%-develop, $(BUILD_IMAGES)): build-%: %/Dockerfile
 	@echo Building sagemath/$*
