@@ -22,7 +22,7 @@ export SAGE_FAT_BINARY="yes"
 export SAGE_INSTALL_GCC="no"
 export MAKE="make -j${N_CORES}"
 cd "$SAGE_SRC_TARGET"
-git clone --depth 1 --branch ${BRANCH} https://github.com/sagemath/sage.git
+git clone --depth 1 --branch ${BRANCH} git://git.sagemath.org/sage.git
 chown -R sage:sage sage
 cd sage
 
