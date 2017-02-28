@@ -14,13 +14,20 @@ RUN    adduser --quiet --shell /bin/bash --gecos "Sage user,101,," --disabled-pa
 
 ARG SAGE_SRC_TARGET=/opt
 # Note: SAGE_BRANCH may also be a tag name
+# Note: SAGE_COMMIT should be the sha1 hash of the actual commit we're
+# building from--by passing in different values for this argument we
+# can invalidate Docker's cache for this image (currently there is a slight
+# race condition between this and the install_sage.sh script, but it is not
+# terribly important for the purpose of cache invalidation)
 ARG SAGE_BRANCH=master
+ARG SAGE_COMMIT=HEAD
 
 COPY scripts/ /tmp/scripts
 RUN chmod -R +x /tmp/scripts
 # make source checkout target, then run the install script
 # see https://github.com/docker/docker/issues/9547 for the sync
-RUN    mkdir -p $SAGE_SRC_TARGET \
+RUN echo "Building Sage from $SAGE_BRANCH ($SAGE_COMMIT)" \
+    && mkdir -p $SAGE_SRC_TARGET \
     && /tmp/scripts/install_sage.sh $SAGE_SRC_TARGET $SAGE_BRANCH \
     && sync
 
