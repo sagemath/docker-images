@@ -1,0 +1,1 @@
+sagemath-patchbot: --hostname sagemath-patchbot-docker sagemath/sagemath-patchbot
