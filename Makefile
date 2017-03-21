@@ -37,6 +37,7 @@ TAG_LATEST ?= 0
 
 check_defined = \
 	$(if $(value $(strip $1)),,$(error Undefined $(strip $1)$(if $2, ($(strip $2)))))
+
 get_git_hash = \
 	$$(git ls-remote --heads $(SAGE_GIT_URL) $1 | \
 	   grep 'refs/heads/$(strip $1)' | awk '{print $$1}')
