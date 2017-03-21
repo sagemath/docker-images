@@ -1,27 +1,31 @@
 SHELL=/bin/bash
 
 # Images and image-specific steps
+BASE_IMAGES=sagemath-base
 DEVELOP_IMAGES=sagemath-develop sagemath-patchbot
 RELEASE_IMAGES=sagemath sagemath-jupyter
 IMAGES=$(DEVELOP_IMAGES) $(RELEASE_IMAGES)
 
 BUILD_IMAGES=$(addprefix build-,$(IMAGES))
+BUILD_BASE_IMAGES=$(addprefix build-,$(BASE_IMAGES))
 BUILD_RELEASE_IMAGES=$(addprefix build-,$(RELEASE_IMAGES))
 BUILD_DEVELOP_IMAGES=$(addprefix build-,$(DEVELOP_IMAGES))
 TEST_IMAGES=$(addprefix test-,$(IMAGES))
 PUSH_IMAGES=$(addprefix push-,$(IMAGES))
 
-.PHONY: all build push docker-clean $(IMAGES) $(BUILD_IMAGES) \
-	$(BUILD_RELEASE_IMAGES) $(BUILD_DEVELOP_IMAGES) $(TEST_IMAGES) \
-	$(PUSH_IMAGES)
+.PHONY: all build push docker-clean sagemath-base sagemath-local-develop \
+	$(BASE_IMAGES) $(IMAGES) \
+	$(BUILD_IMAGES) $(BUILD_RELEASE_IMAGES) $(BUILD_DEVELOP_IMAGES) \
+	$(TEST_IMAGES) $(PUSH_IMAGES)
 
 # Stamp files
+BUILD_BASE_IMAGES_S=$(addprefix stamps/,$(BUILD_BASE_IMAGES))
 BUILD_RELEASE_IMAGES_S=$(addprefix stamps/,$(BUILD_RELEASE_IMAGES))
 BUILD_DEVELOP_IMAGES_S=$(addprefix stamps/,$(BUILD_DEVELOP_IMAGES))
 TEST_IMAGES_S=$(addprefix stamps/,$(TEST_IMAGES))
 PUSH_IMAGES_S=$(addprefix stamps/,$(PUSH_IMAGES))
-STAMPS=$(BUILD_RELEASE_IMAGES_S) $(BUILD_DEVELOP_IMAGES_S) $(TEST_IMAGES_S) \
-	   $(PUSH_IMAGES_S)
+STAMPS=$(BUILD_BASE_IMAGES_S) $(BUILD_RELEASE_IMAGES_S) \
+	   $(BUILD_DEVELOP_IMAGES_S) $(TEST_IMAGES_S) $(PUSH_IMAGES_S)
 
 SAGE_GIT_URL=git://git.sagemath.org/sage.git
 # Rather than hard-coding a default, this variable should always be specified
@@ -65,9 +69,9 @@ all: $(IMAGES)
 
 release: sagemath sagemath-jupyter
 
-sagemath:
+sagemath: sagemath-base
 
-sagemath-develop:
+sagemath-develop: sagemath-base
 
 sagemath-jupyter: sagemath
 
@@ -81,6 +85,10 @@ push: $(PUSH_IMAGES)
 
 ############################### Cleanup Targets ###############################
 
+# Refs:
+# - https://www.calazan.com/docker-cleanup-commands/
+# - http://stackoverflow.com/questions/17236796/how-to-remove-old-docker-containers
+
 docker-clean:
 	@echo "Remove all non running containers"
 	-docker rm `docker ps -q -f status=exited`
@@ -90,13 +98,16 @@ docker-clean:
 ################################# Main Rules ##################################
 
 $(IMAGES): %: stamps/push-%
-$(BUILD_IMAGES) $(TEST_IMAGES) $(PUSH_IMAGES): %: stamps/%
+$(BUILD_BASE_IMAGES) $(BUILD_IMAGES) $(TEST_IMAGES) $(PUSH_IMAGES): %: stamps/%
 
 $(STAMPS): | stamps logs
 
-# Refs:
-# - https://www.calazan.com/docker-cleanup-commands/
-# - http://stackoverflow.com/questions/17236796/how-to-remove-old-docker-containers
+$(BUILD_BASE_IMAGES_S): stamps/build-%: %/Dockerfile
+	@echo Building $@ image
+	$(call log, time docker build $(DOCKER_BUILD_FLAGS) \
+		--tag=sagemath/$* $*, \
+	    build-$*)
+	touch $@
 
 # Build all release images
 $(BUILD_RELEASE_IMAGES_S): stamps/build-%: %/Dockerfile
@@ -104,7 +115,7 @@ $(BUILD_RELEASE_IMAGES_S): stamps/build-%: %/Dockerfile
 	$(call check_defined, SAGE_VERSION, Sage version to build)
 	$(call log, time docker build $(DOCKER_BUILD_FLAGS) \
 		--tag="sagemath/$*:$(SAGE_VERSION)" \
-		--build-arg SAGE_BRANCH=$(SAGE_VERSION) $*,
+		--build-arg SAGE_BRANCH=$(SAGE_VERSION) $*, \
 		build-$*)
 ifeq ($(TAG_LATEST),1)
 	docker tag "sagemath/$*:$(SAGE_VERSION)" "sagemath/$*:latest"
@@ -136,6 +147,11 @@ ifeq ($(TAG_LATEST),1)
 	$(if $(findstring -develop,$*),,docker push "sagemath/$*:latest")
 endif
 	touch $@
+
+sagemath-local-develop: %: %/Dockerfile
+	@echo Building $@ image
+	time docker build $(DOCKER_BUILD_FLAGS) --tag=sagemath/$@ $(dir $<) 2>&1 | tee $<.log
+
 
 stamps logs:
 	mkdir $@
