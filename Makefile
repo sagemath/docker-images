@@ -56,8 +56,7 @@ sage_run = \
 		$2
 
 sage_test = \
-	$(call sage_run, $1, sage -t -p 0 -a --long) || \
-	$(call sage_run, $1, sage -t -p 0 -a --long --failed)
+	$(call sage_run, $1, bash -c 'sage -t -p 0 -a --long || sage -t -p 0 -a --long --failed') 
 
 # Write command stdout/err to a logfile in logs/
 # $1: The command to run
