@@ -12,24 +12,24 @@ infrastructure, though may be useful for recreating it elsewhere as well.
 
 - Connect on the machine and run the following commands:
 
-    ssh ubuntu@...
-    sudo su -
+      ssh ubuntu@...
+      sudo su -
 
-    # TODO: update this for openstack; not needed with the current default disk space
-    # mkdir /var/lib/docker
-    # echo /dev/vdc /var/lib/docker ext4 errors=remount-ro 0 1 >> /etc/fstab
+      # TODO: update this for openstack; not needed with the current default disk space
+      # mkdir /var/lib/docker
+      # echo /dev/vdc /var/lib/docker ext4 errors=remount-ro 0 1 >> /etc/fstab
 
-    # Taken from https://docs.docker.com/engine/installation/linux/ubuntulinux/
-    apt-get install -y apt-transport-https ca-certificates software-properties-common build-essential
-    apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
-    # This does not quite work; one gets "... trusty main" in /etc/sources.list instead of "ubuntu-trusty main"
-    # add-apt-repository https://apt.dockerproject.org/repo
+      # Taken from https://docs.docker.com/engine/installation/linux/ubuntulinux/
+      apt-get install -y apt-transport-https ca-certificates software-properties-common build-essential
+      apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+      # This does not quite work; one gets "... trusty main" in /etc/sources.list instead of "ubuntu-trusty main"
+      # add-apt-repository https://apt.dockerproject.org/repo
 
-    echo deb https://apt.dockerproject.org/repo ubuntu-trusty main > /etc/apt/sources.list.d/docker.list
-    apt-get update
-    apt-get install -y apparmor linux-image-extra-$(uname -r) docker-engine git make
-    groupadd docker
-    usermod -aG docker ubuntu
+      echo deb https://apt.dockerproject.org/repo ubuntu-trusty main > /etc/apt/sources.list.d/docker.list  
+      apt-get update
+      apt-get install -y apparmor linux-image-extra-$(uname -r) docker-engine git make
+      groupadd docker
+      usermod -aG docker ubuntu
 
 - The Sage patchbot container currently has an issue where the patchbot
   command will refuse to run if there is not a certain amount of disk space
@@ -37,19 +37,19 @@ infrastructure, though may be useful for recreating it elsewhere as well.
   large enough for the patchbot container.  So we increase that limit before
   restarting the docker service:
 
-    echo 'DOCKER_OPTS="--storage-opt dm.basesize=20G"' >> /etc/default/docker
-    service docker restart
+      echo 'DOCKER_OPTS="--storage-opt dm.basesize=20G"' >> /etc/default/docker
+      service docker restart
 
 - log-out completely (for ubuntu's docker permission) / log-in again as ubuntu
 
 - Reconnect on the machine and run the following commands:
 
-    ssh ubuntu@...
-    docker run hello-world
+      ssh ubuntu@...
+      docker run hello-world
 
-    git clone https://github.com/sagemath/docker-images.git
-    cd docker-images
-    make             # you probably want to run this with screen or byobu
+      git clone https://github.com/sagemath/docker-images.git
+      cd docker-images
+      make             # you probably want to run this with screen or byobu
 
 ## Set up the Docker container manager Upstart service
 
