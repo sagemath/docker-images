@@ -76,6 +76,20 @@ service) for specific containers to create and run as services:
 
     sudo cp upstart/containers /etc/docker
 
+Then start the service either by rebooting or simply running:
+
+    sudo service docker-manager start
+
+If there are any problems (e.g. the container doesn't appear to be running
+in `docker ps`) you can try restarting the `docker-manager` service, or the
+service *specific* to the sagemath-patchbot instance with:
+
+    sudo service docker-instance NAME=sagemath-patchbot restart
+
+You can also take a look at the log for the service in:
+
+    /var/log/upstart/docker-instance-sagemath-patchbot.log
+
 ## TODO
 
 - Replace all of the above documentation with some Ansible playbooks.
