@@ -9,6 +9,10 @@ infrastructure, though may be useful for recreating it elsewhere as well.
 - Connect https://keystone.lal.in2p3.fr/
 - Login with stratuslab domain and your credentials
 - Flavor: os.16, image: Ubuntu 14.04
+- *Whatever you do:* Make sure your kernel is not affected by this issue:
+  https://github.com/moby/moby/issues/18180; recent versions in Debian and
+  Ubuntu are all up to date on this and are not affected.  So make sure to
+  grab the latest kernel updates just to be sure.
 
 - Connect on the machine and run the following commands:
 
