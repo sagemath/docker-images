@@ -33,6 +33,11 @@ SAGE_GIT_URL=git://git.sagemath.org/sage.git
 SAGE_VERSION ?=
 TAG_LATEST ?= 0
 
+# Additional configuration
+# Supplies the number of CPUs on the build machine, but no more than 8
+N_CORES ?= $(shell N=$$(cat /proc/cpuinfo | grep '^processor' | wc -l); \
+		           [ $$N -gt 8 ] && echo 8 || echo $$N)
+
 ################################ Subroutines ##################################
 
 check_defined = \
@@ -127,6 +132,7 @@ $(BUILD_DEVELOP_IMAGES_S): stamps/build-%: %/Dockerfile
 	@echo Building sagemath/$*
 	$(call log, time docker build $(DOCKER_BUILD_FLAGS) \
 		--tag="sagemath/$*" \
+		--build-arg N_CORES=$(N_CORES) \
 		--build-arg SAGE_BRANCH=develop \
 		--build-arg SAGE_COMMIT=$(call get_git_hash, develop) $*,\
 		build-$*)
