@@ -7,7 +7,7 @@ ARG SAGE_BRANCH=develop
 ARG SAGE_COMMIT
 
 ARG PATCHBOT_URL=https://github.com/sagemath/sage-patchbot.git
-ARG PATCHBOT_REF=2.6.7
+ARG PATCHBOT_REF=2.6.9
 
 USER root
 
