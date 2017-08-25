@@ -6,11 +6,14 @@ DEVELOP_IMAGES=sagemath-develop sagemath-patchbot
 RELEASE_IMAGES=sagemath sagemath-jupyter
 IMAGES=$(DEVELOP_IMAGES) $(RELEASE_IMAGES)
 
+TESTED_IMAGES=sagemath sagemath-develop
+NON_TESTED_IMAGES=sagemath-patchbot sagemath-jupyter
+
 BUILD_IMAGES=$(addprefix build-,$(IMAGES))
 BUILD_BASE_IMAGES=$(addprefix build-,$(BASE_IMAGES))
 BUILD_RELEASE_IMAGES=$(addprefix build-,$(RELEASE_IMAGES))
 BUILD_DEVELOP_IMAGES=$(addprefix build-,$(DEVELOP_IMAGES))
-TEST_IMAGES=$(addprefix test-,$(IMAGES))
+TEST_IMAGES=$(addprefix test-,$(TESTED_IMAGES))
 PUSH_IMAGES=$(addprefix push-,$(IMAGES))
 
 .PHONY: all build push docker-clean sagemath-base sagemath-local-develop \
@@ -23,6 +26,7 @@ BUILD_BASE_IMAGES_S=$(addprefix stamps/,$(BUILD_BASE_IMAGES))
 BUILD_RELEASE_IMAGES_S=$(addprefix stamps/,$(BUILD_RELEASE_IMAGES))
 BUILD_DEVELOP_IMAGES_S=$(addprefix stamps/,$(BUILD_DEVELOP_IMAGES))
 TEST_IMAGES_S=$(addprefix stamps/,$(TEST_IMAGES))
+NON_TEST_IMAGES_S=$(addprefix stamps/test-,$(NON_TESTED_IMAGES))
 PUSH_IMAGES_S=$(addprefix stamps/,$(PUSH_IMAGES))
 STAMPS=$(BUILD_BASE_IMAGES_S) $(BUILD_RELEASE_IMAGES_S) \
 	   $(BUILD_DEVELOP_IMAGES_S) $(TEST_IMAGES_S) $(PUSH_IMAGES_S)
@@ -138,15 +142,21 @@ $(BUILD_DEVELOP_IMAGES_S): stamps/build-%: %/Dockerfile
 		build-$*)
 	touch $@
 
+# Note: Don't test patchbot images since running the tests is part of building
+# the image itself.
 $(TEST_IMAGES_S): stamps/test-%: stamps/build-%
-	@echo Testing $*
+	@echo "Testing $*"
 	$(call log, $(call sage_test, $*), test-$*)
 	@echo "All tests passed"
 	touch $@
 
+$(NON_TEST_IMAGES_S): stamps/test-%: stamps/build-%
+	touch $@
+
 $(PUSH_IMAGES_S): stamps/push-%: stamps/build-% stamps/test-%
 	@echo Pushing $*
-	$(if $(findstring -develop,$*),docker push "sagemath/$*",\
+	$(if $(or $(findstring -develop,$*),$(findstring -patchbot,$*)),\
+		docker push "sagemath/$*",\
 		$(call check_defined, SAGE_VERSION, Sage version to push) \
 		docker push "sagemath/$*:$(SAGE_VERSION)")
 ifeq ($(TAG_LATEST),1)
