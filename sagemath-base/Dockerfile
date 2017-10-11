@@ -1,4 +1,4 @@
-FROM ubuntu:wily
+FROM ubuntu:xenial
 
 MAINTAINER Erik M. Bray <erik.bray@lri.fr>
 
