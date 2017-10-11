@@ -104,6 +104,9 @@ docker-clean:
 	@echo "Delete all untagged/dangling (<none>) images"
 	-docker rmi `docker images -q -f dangling=true`
 
+$(addprefix clean-,$(IMAGES)):
+	rm -f stamps/*-$(subst clean-,,$@)
+
 ################################# Main Rules ##################################
 
 $(IMAGES): %: stamps/push-%
