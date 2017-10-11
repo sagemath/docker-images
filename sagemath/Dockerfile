@@ -11,6 +11,7 @@ ARG SAGE_SRC_TARGET=/opt
 # terribly important for the purpose of cache invalidation)
 ARG SAGE_BRANCH=master
 ARG SAGE_COMMIT=HEAD
+ARG N_CORES
 
 USER root
 COPY scripts/ /tmp/scripts
