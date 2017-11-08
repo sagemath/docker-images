@@ -27,7 +27,9 @@ EOFSAGE
 sudo -H -u sage sage -pip install \
     terminado \
     notebook>=5 \
-    ipykernel>=4.6 \
+    ipykernel>=4.6
+
+sudo -H -u sage sage -i \
     gap_jupyter \
     singular_jupyter \
     pari_jupyter
