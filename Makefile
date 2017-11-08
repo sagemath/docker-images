@@ -111,6 +111,7 @@ clean-all: $(addprefix clean-,$(BASE_IMAGES) $(IMAGES))
 
 ################################# Main Rules ##################################
 
+$(BASE_IMAGES): %: stamps/build-%
 $(IMAGES): %: stamps/push-%
 $(BUILD_BASE_IMAGES) $(BUILD_IMAGES) $(TEST_IMAGES) $(PUSH_IMAGES): %: stamps/%
 

@@ -28,8 +28,11 @@ RUN echo "Building Sage from $SAGE_BRANCH ($SAGE_COMMIT)" \
 RUN /tmp/scripts/post_install_sage.sh && rm -rf /tmp/* && sync
 
 USER sage
+# Set up the default shell environment to the Sage shell environment
+# (as though `sage -sh` were already called)
+RUN sage -sh -c env | grep '^[^_]' | sort > environment \\
+    && sudo mv environment /etc/environment
 ENV HOME /home/sage
-
 WORKDIR /home/sage
 
 CMD [ "sage" ]

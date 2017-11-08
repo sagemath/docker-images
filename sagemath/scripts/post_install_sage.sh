@@ -22,4 +22,12 @@ EOFSAGE
 
 # Install additional Python packages into the sage Python distribution...
 # Install terminado for terminal support in the Jupyter Notebook
-sudo -H -u sage sage -pip install terminado
+# Upgrade Jupyter notebook to 5.x
+# Install additional Jupyter kernels
+sudo -H -u sage sage -pip install \
+    terminado \
+    notebook>=5 \
+    ipykernel>=4.6 \
+    gap_jupyter \
+    singular_jupyter \
+    pari_jupyter
