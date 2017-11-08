@@ -14,18 +14,18 @@ ARG SAGE_COMMIT=HEAD
 ARG N_CORES
 
 USER root
-COPY scripts/ /tmp/scripts
-RUN chmod -R +x /tmp/scripts
+COPY scripts/install_sage.sh /tmp/
 # We do a few things as root in the sage install scripts, though the sage build
 # itself is done by sudo-ing as the sage user
 # make source checkout target, then run the install script
 # see https://github.com/docker/docker/issues/9547 for the sync
 RUN echo "Building Sage from $SAGE_BRANCH ($SAGE_COMMIT)" \
     && mkdir -p $SAGE_SRC_TARGET \
-    && /tmp/scripts/install_sage.sh $SAGE_SRC_TARGET $SAGE_BRANCH \
+    && bash /tmp/install_sage.sh $SAGE_SRC_TARGET $SAGE_BRANCH \
     && sync
 
-RUN /tmp/scripts/post_install_sage.sh && rm -rf /tmp/* && sync
+COPY scripts/post_install_sage.sh /tmp/
+RUN bash /tmp/post_install_sage.sh && rm -rf /tmp/* && sync
 
 USER sage
 # Set up the default shell environment to the Sage shell environment
