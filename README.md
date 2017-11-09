@@ -6,6 +6,16 @@ Singular, PARI/GP, ...).
 
 The containers are available on [dockerhub](https://hub.docker.com/u/sagemath/).
 
+## Tag format
+
+Each image is tagged with the version of SageMath installed in that image (e.g.
+8.0).
+
+Tags with a version like `X.Y-N` represent revisions to the image itself i.e.
+changes that were made to the Dockerfile it was built from.  For example while
+`sagemath:8.0` is the first image to contain SageMath 8.0, `sagemath:8.0-1` is
+the first revised SageMath 8.0 image.
+
 ## [sagemath/sagemath](sagemath/Dockerfile) (roughly 3.6 GB)
 
 This container contains a basic installation of the latest version of
