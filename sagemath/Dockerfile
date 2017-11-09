@@ -21,18 +21,14 @@ COPY scripts/install_sage.sh /tmp/
 # see https://github.com/docker/docker/issues/9547 for the sync
 RUN echo "Building Sage from $SAGE_BRANCH ($SAGE_COMMIT)" \
     && mkdir -p $SAGE_SRC_TARGET \
-    && bash /tmp/install_sage.sh $SAGE_SRC_TARGET $SAGE_BRANCH \
+    && /tmp/install_sage.sh $SAGE_SRC_TARGET $SAGE_BRANCH \
     && sync
 
-COPY scripts/post_install_sage.sh /tmp/
-RUN bash /tmp/post_install_sage.sh && rm -rf /tmp/* && sync
-
 USER sage
-# Set up the default shell environment to the Sage shell environment
-# (as though `sage -sh` were already called)
-RUN sage -sh -c env | grep '^[^_]' | sort > environment \\
-    && sudo mv environment /etc/environment
 ENV HOME /home/sage
 WORKDIR /home/sage
+COPY scripts/post_install_sage.sh /tmp/
+RUN /tmp/post_install_sage.sh $SAGE_SRC_TARGET && sudo rm -rf /tmp/* && sync
 
+ENTRYPOINT [ "sage-entrypoint" ]
 CMD [ "sage" ]
