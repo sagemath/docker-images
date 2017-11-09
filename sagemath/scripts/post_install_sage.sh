@@ -33,8 +33,8 @@ EOFSAGE
 # Install additional Jupyter kernels
 sage -pip install \
     terminado \
-    notebook>=5 \
-    ipykernel>=4.6
+    'notebook>=5' \
+    'ipykernel>=4.6'
 
 sage -i \
     gap_jupyter \
