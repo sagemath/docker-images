@@ -55,6 +55,9 @@ get_git_hash = \
 	$$(git ls-remote --heads $(SAGE_GIT_URL) $1 | \
 	   grep 'refs/heads/$(strip $1)' | awk '{print $$1}')
 
+get_image_hash = \
+	$$(docker images -q --no-trunc $1)
+
 # Run the tests for sage--the first argument is the image name
 # This runs the tests up to two times: Once normally, and then if there
 # are failures once more with the --failed flag.
@@ -126,7 +129,7 @@ $(BUILD_BASE_IMAGES_S): $(STAMP_DIR)/build-%: %/Dockerfile
 	$(call log, time docker build $(DOCKER_BUILD_FLAGS) \
 		--tag=sagemath/$* $*, \
 	    build-$*)
-	touch $@
+	echo $(call get_image_hash,sagemath/$*) > $@
 
 # Build all release images
 $(BUILD_RELEASE_IMAGES_S): $(STAMP_DIR)/build-%: %/Dockerfile
@@ -139,7 +142,7 @@ $(BUILD_RELEASE_IMAGES_S): $(STAMP_DIR)/build-%: %/Dockerfile
 ifeq ($(TAG_LATEST),1)
 	docker tag "sagemath/$*:$(SAGE_VERSION)" "sagemath/$*:latest"
 endif
-	touch $@
+	echo $(call get_image_hash,sagemath/$*:$(SAGE_VERSION)) > $@
 
 # Builds the sagemath-develop and sagemath-patchbot images
 $(BUILD_DEVELOP_IMAGES_S): $(STAMP_DIR)/build-%: %/Dockerfile
@@ -150,7 +153,7 @@ $(BUILD_DEVELOP_IMAGES_S): $(STAMP_DIR)/build-%: %/Dockerfile
 		--build-arg SAGE_BRANCH=develop \
 		--build-arg SAGE_COMMIT=$(call get_git_hash, develop) $*,\
 		build-$*)
-	touch $@
+	echo $(call get_image_hash,sagemath/$*) > $@
 
 # Note: Don't test patchbot images since running the tests is part of building
 # the image itself.
