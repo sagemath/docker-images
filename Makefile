@@ -21,13 +21,17 @@ PUSH_IMAGES=$(addprefix push-,$(IMAGES))
 	$(BUILD_IMAGES) $(BUILD_RELEASE_IMAGES) $(BUILD_DEVELOP_IMAGES) \
 	$(TEST_IMAGES) $(PUSH_IMAGES)
 
+# Directories
+STAMP_DIR=.stamps
+LOG_DIR=.logs
+
 # Stamp files
-BUILD_BASE_IMAGES_S=$(addprefix stamps/,$(BUILD_BASE_IMAGES))
-BUILD_RELEASE_IMAGES_S=$(addprefix stamps/,$(BUILD_RELEASE_IMAGES))
-BUILD_DEVELOP_IMAGES_S=$(addprefix stamps/,$(BUILD_DEVELOP_IMAGES))
-TEST_IMAGES_S=$(addprefix stamps/,$(TEST_IMAGES))
-NON_TEST_IMAGES_S=$(addprefix stamps/test-,$(NON_TESTED_IMAGES))
-PUSH_IMAGES_S=$(addprefix stamps/,$(PUSH_IMAGES))
+BUILD_BASE_IMAGES_S=$(addprefix $(STAMP_DIR)/,$(BUILD_BASE_IMAGES))
+BUILD_RELEASE_IMAGES_S=$(addprefix $(STAMP_DIR)/,$(BUILD_RELEASE_IMAGES))
+BUILD_DEVELOP_IMAGES_S=$(addprefix $(STAMP_DIR)/,$(BUILD_DEVELOP_IMAGES))
+TEST_IMAGES_S=$(addprefix $(STAMP_DIR)/,$(TEST_IMAGES))
+NON_TEST_IMAGES_S=$(addprefix $(STAMP_DIR)/test-,$(NON_TESTED_IMAGES))
+PUSH_IMAGES_S=$(addprefix $(STAMP_DIR)/,$(PUSH_IMAGES))
 STAMPS=$(BUILD_BASE_IMAGES_S) $(BUILD_RELEASE_IMAGES_S) \
 	   $(BUILD_DEVELOP_IMAGES_S) $(TEST_IMAGES_S) $(PUSH_IMAGES_S)
 
@@ -67,10 +71,10 @@ sage_run = \
 sage_test = \
 	$(call sage_run, $1, bash -c 'sage -t -p 0 -a --long || sage -t -p 0 -a --long --failed') 
 
-# Write command stdout/err to a logfile in logs/
+# Write command stdout/err to a logfile in $(LOG_DIR)/
 # $1: The command to run
 # $2: The base name of the logfile
-log = $1 2>&1 | tee logs/$(strip $2).log ; test $${PIPESTATUS[0]} -eq 0
+log = $1 2>&1 | tee $(LOG_DIR)/$(strip $2).log ; test $${PIPESTATUS[0]} -eq 0
 
 ############################## Top-level Targets ##############################
 
@@ -105,19 +109,19 @@ docker-clean:
 	-docker rmi `docker images -q -f dangling=true`
 
 $(addprefix clean-,$(BASE_IMAGES) $(IMAGES)):
-	rm -f stamps/*-$(subst clean-,,$@)
+	rm -f $(STAMP_DIR)/*-$(subst clean-,,$@)
 
 clean-all: $(addprefix clean-,$(BASE_IMAGES) $(IMAGES))
 
 ################################# Main Rules ##################################
 
-$(BASE_IMAGES): %: stamps/build-%
-$(IMAGES): %: stamps/push-%
-$(BUILD_BASE_IMAGES) $(BUILD_IMAGES) $(TEST_IMAGES) $(PUSH_IMAGES): %: stamps/%
+$(BASE_IMAGES): %: $(STAMP_DIR)/build-%
+$(IMAGES): %: $(STAMP_DIR)/push-%
+$(BUILD_BASE_IMAGES) $(BUILD_IMAGES) $(TEST_IMAGES) $(PUSH_IMAGES): %: $(STAMP_DIR)/%
 
-$(STAMPS): | stamps logs
+$(STAMPS): | $(STAMP_DIR) $(LOG_DIR)
 
-$(BUILD_BASE_IMAGES_S): stamps/build-%: %/Dockerfile
+$(BUILD_BASE_IMAGES_S): $(STAMP_DIR)/build-%: %/Dockerfile
 	@echo Building $@ image
 	$(call log, time docker build $(DOCKER_BUILD_FLAGS) \
 		--tag=sagemath/$* $*, \
@@ -125,7 +129,7 @@ $(BUILD_BASE_IMAGES_S): stamps/build-%: %/Dockerfile
 	touch $@
 
 # Build all release images
-$(BUILD_RELEASE_IMAGES_S): stamps/build-%: %/Dockerfile
+$(BUILD_RELEASE_IMAGES_S): $(STAMP_DIR)/build-%: %/Dockerfile
 	@echo Building sagemath/$*
 	$(call check_defined, SAGE_VERSION, Sage version to build)
 	$(call log, time docker build $(DOCKER_BUILD_FLAGS) \
@@ -138,7 +142,7 @@ endif
 	touch $@
 
 # Builds the sagemath-develop and sagemath-patchbot images
-$(BUILD_DEVELOP_IMAGES_S): stamps/build-%: %/Dockerfile
+$(BUILD_DEVELOP_IMAGES_S): $(STAMP_DIR)/build-%: %/Dockerfile
 	@echo Building sagemath/$*
 	$(call log, time docker build $(DOCKER_BUILD_FLAGS) \
 		--tag="sagemath/$*" \
@@ -150,16 +154,16 @@ $(BUILD_DEVELOP_IMAGES_S): stamps/build-%: %/Dockerfile
 
 # Note: Don't test patchbot images since running the tests is part of building
 # the image itself.
-$(TEST_IMAGES_S): stamps/test-%: stamps/build-%
+$(TEST_IMAGES_S): $(STAMP_DIR)/test-%: $(STAMP_DIR)/build-%
 	@echo "Testing $*"
 	$(call log, $(call sage_test, $*), test-$*)
 	@echo "All tests passed"
 	touch $@
 
-$(NON_TEST_IMAGES_S): stamps/test-%: stamps/build-%
+$(NON_TEST_IMAGES_S): $(STAMP_DIR)/test-%: $(STAMP_DIR)/build-%
 	touch $@
 
-$(PUSH_IMAGES_S): stamps/push-%: stamps/build-% stamps/test-%
+$(PUSH_IMAGES_S): $(STAMP_DIR)/push-%: $(STAMP_DIR)/build-% $(STAMP_DIR)/test-%
 	@echo Pushing $*
 	$(if $(or $(findstring -develop,$*),$(findstring -patchbot,$*)),\
 		docker push "sagemath/$*",\
@@ -175,5 +179,5 @@ sagemath-local-develop: %: %/Dockerfile
 	time docker build $(DOCKER_BUILD_FLAGS) --tag=sagemath/$@ $(dir $<) 2>&1 | tee $<.log
 
 
-stamps logs:
+$(STAMP_DIR) $(LOG_DIR):
 	mkdir $@
