@@ -181,6 +181,14 @@ sagemath-local-develop: %: %/Dockerfile
 	@echo Building $@ image
 	time docker build $(DOCKER_BUILD_FLAGS) --tag=sagemath/$@ $(dir $<) 2>&1 | tee $<.log
 
+# For all images this generates rules for dependencies for their Dockerfile
+# so that if any of the files in build context are changed the Dockerfile is
+# updated as well.
+define DOCKERFILE_RULE_TEMPLATE
+$(1)/Dockerfile: $$(shell find $(1)/ -type f -a ! -name Dockerfile)
+	touch $$@
+endef
+$(foreach image,$(BASE_IMAGES) $(IMAGES),$(eval $(call DOCKERFILE_RULE_TEMPLATE,$(image))))
 
 $(STAMP_DIR) $(LOG_DIR):
 	mkdir $@
