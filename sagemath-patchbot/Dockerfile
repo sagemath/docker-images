@@ -7,15 +7,12 @@ ARG SAGE_BRANCH=develop
 ARG SAGE_COMMIT
 
 ARG PATCHBOT_URL=https://github.com/sagemath/sage-patchbot.git
-ARG PATCHBOT_REF=2.6.9
+ARG PATCHBOT_REF=master
 
 USER root
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN    apt-get update -qq \
-    && apt-get install -y software-properties-common \
-    && apt-add-repository ppa:duggan/jo --yes \
-    && apt-get update -qq \
     && apt-get install -y python-pip jo \
 	&& apt-get clean && rm -rf /var/lib/apt/lists/*
 
