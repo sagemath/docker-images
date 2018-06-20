@@ -30,7 +30,8 @@ ARG N_CORES=1
 # (by default taken from the N_CORES on the image build machine itself) along
 # with some other default config.
 RUN jo -p sage_root=$(sage --root) parallelism=$N_CORES retries=2 \
-    > patchbot.conf
+    safe_only=false \
+    plugins=$(jo -a pyflakes) > patchbot.conf
 
 # By default, the patchbot starts by setting up a couple things and
 # running all the tests once to check that the base installation is
