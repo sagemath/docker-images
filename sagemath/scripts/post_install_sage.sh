@@ -27,20 +27,15 @@ sage <<EOFSAGE
     quit
 EOFSAGE
 
-# Install additional Python packages into the sage Python distribution...
-# Install terminado for terminal support in the Jupyter Notebook
-# Upgrade Jupyter notebook to 5.x
-# Install additional Jupyter kernels
+# Install additional Python packages into the Sage Python distribution...
+# Install JupyterLab
 sage -pip install \
-    terminado \
-    'notebook>=5' \
-    'ipykernel>=4.6'
+    jupyterlab
 
 sage -i \
     gap_jupyter \
-    singular_jupyter \
-    pari_jupyter
-
+    pari_jupyter \
+    singular_jupyter
 
 # Generate the sage-entrypoint.sh script which sets the sage environment for
 # all commands run in the container; first we output 'set' in the default
