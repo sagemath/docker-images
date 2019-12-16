@@ -1,3 +1,5 @@
+**This repository is obsolete. Docker images are created by [GitLab CI scripts](https://github.com/sagemath/sage/blob/master/.gitlab-ci.yml) from a [Dockerfile](https://github.com/sagemath/sage/blob/master/docker/Dockerfile) that is in the main [sagemath/sage](https://github.com/sagemath/sage) repository now.**
+
 # Containers for SageMath & friends
 
 This repository contains a collection of Dockerfiles and supporting files
